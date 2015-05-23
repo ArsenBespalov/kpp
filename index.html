@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Проверка номеров для КПП Клиник</title>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/cover.css">
+</head>
+<body>
+	<div class="site-wrapper">
+		<div class="site-wrapper-inner">
+			<div class="cover-container">
+				
+				<div class="masthead clearfix">
+					<div class="inner">
+						<div class="masthead-brand">КПП Клиник — Сверка государственных автомобильных номеров</div>
+						<nav>
+							<ul class="nav masthead-nav">
+								<li class="active"><a href="#.">Главная</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+
+				<div class="inner cover">
+					<h1 class="cover-heading">&nbsp;</h1>
+					<p class="lead">Введите 3 цифры номера:</p>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-xs-2 col-xs-offset-5">
+								<input type="text" class="form-control input-lg text-center" id="gosNumber" placeholder="123" maxlength="3" autofocus>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12" id="images">
+							<img src="assets/images/dot.gif" width="400" height="81">
+						</div>
+					</div>
+				</div>
+
+				<div class="mastfoot">
+					<div class="inner">
+						<p>Программа разработана для охраны КПП Клиник ГБОУ ВПО <a href="http://arsen.pw/" target="_blank">@ArsenBespalov</a>.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script>
+	$(function () {
+		var gosNumber = (function() {
+			var json = null;
+			$.ajax({
+				'async': false,
+				'global': false,
+				'url': 'gosNumber.json',
+				'dataType': 'json',
+				'success': function (data) {
+					json = data;
+				}
+			});
+			return json;
+		})();
+
+		$('#gosNumber').keyup(function(event) {
+			var $this = $(this)
+			if ($this.val().length == 3) {
+				$this.select();
+				$('#images').empty();
+				gosNumber.numbers.forEach(function(entity) {
+					if (entity.number == $this.val()) {
+						$('.cover-heading').text('Такой номер есть');
+						$('#images').append('<img src="assets/images/auto_numbers/'+entity.prefix+entity.number+entity.suffix+entity.region+'.png"> ');
+					}
+				});
+			} else {
+				$('.cover-heading').html('&nbsp;');
+				$('#images').empty().append('<img src="assets/images/dot.gif" width="400" height="81">');
+			}
+		});
+	});
+	</script>
+</body>
+</html>
